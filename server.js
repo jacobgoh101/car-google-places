@@ -8,7 +8,7 @@ const app = express();
 const apiKey = process.env.API_KEY;
 
 app.get('/', (appReq, appRes) => {
-    appRes.end('/googleplaces');
+    appRes.end('/googleplaces?location=3.139003,101.686855&radius=50000&keyword=tyre');
 })
 app.get('/googleplaces', (appReq, appRes) => {
     appRes.setHeader('Content-Type', 'application/json');
