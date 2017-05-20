@@ -24,17 +24,17 @@ app.get('/googleplaces', (appReq, appRes) => {
         (callback) => {
             axios
                 .get("https://maps.googleapis.com/maps/api/place/radarsearch/json", {
-                params: {
-                    key: apiKey,
-                    location,
-                    radius,
-                    keyword
-                }
-            })
+                    params: {
+                        key: apiKey,
+                        location,
+                        radius,
+                        keyword
+                    }
+                })
                 .then((res) => {
-                    if(res.data.results && res.data.results.length){
+                    if (res.data.results && res.data.results.length) {
                         return res.data.results;
-                    }else{
+                    } else {
                         return callback(`${JSON.stringify(res.data)}`);
                     }
                 })
@@ -50,11 +50,11 @@ app.get('/googleplaces', (appReq, appRes) => {
                 let placeid = result.place_id;
                 axios
                     .get("https://maps.googleapis.com/maps/api/place/details/json", {
-                    params: {
-                        key: apiKey,
-                        placeid
-                    }
-                })
+                        params: {
+                            key: apiKey,
+                            placeid
+                        }
+                    })
                     .then((res) => {
                         return res.data.result;
                     })
@@ -67,9 +67,9 @@ app.get('/googleplaces', (appReq, appRes) => {
                             console.log("This place has email!!! placeid: " + placeid)
                         }
 
-                        let website = result.website
-                            ? result.website
-                            : "";
+                        let website = result.website ?
+                            result.website :
+                            "";
                         let country,
                             city,
                             zipcode;
@@ -96,6 +96,16 @@ app.get('/googleplaces', (appReq, appRes) => {
                                 });
                         }
 
+                        let weekday_text = [];
+                        if (result.opening_hours && result.opening_hours.weekday_text && result.opening_hours.weekday_text.length) {
+                            weekday_text = result.opening_hours.weekday_text;
+                        }
+
+                        let types = [];
+                        if(result.types && result.types.length) {
+                            types = result.types;
+                        }
+
                         let singleEndResult = {
                             name: result.name,
                             address: result.formatted_address,
@@ -107,6 +117,8 @@ app.get('/googleplaces', (appReq, appRes) => {
                             longitude: result.geometry.location.lng,
                             website,
                             photos,
+                            weekday_text,
+                            types,
                             placeid
                         };
                         return endResult.push(singleEndResult);
@@ -130,7 +142,7 @@ app.get('/googleplaces', (appReq, appRes) => {
         const endObj = {
             result: endResult
         };
-        appRes.json(endResult);        
+        appRes.json(endResult);
     });
 });
 
