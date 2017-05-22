@@ -73,6 +73,7 @@ app.get('/googleplaces', (appReq, appRes) => {
                             : "";
                         let country,
                             city,
+                            state,
                             zipcode;
                         result
                             .address_components
@@ -85,6 +86,9 @@ app.get('/googleplaces', (appReq, appRes) => {
                                 }
                                 if (address_component.types.indexOf('postal_code') > -1) {
                                     zipcode = address_component.long_name;
+                                }
+                                if (address_component.types.indexOf('administrative_area_level_1') > -1) {
+                                    state = address_component.long_name;
                                 }
                             });
 
@@ -116,9 +120,10 @@ app.get('/googleplaces', (appReq, appRes) => {
                             name: result.name,
                             address: result.formatted_address,
                             phone: result.formatted_phone_number,
-                            country,
                             city,
+                            state,
                             zipcode,
+                            country,
                             latitude: result.geometry.location.lat,
                             longitude: result.geometry.location.lng,
                             website,
