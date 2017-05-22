@@ -16,6 +16,7 @@ app.get('/googleplaces', (appReq, appRes) => {
     const location = appReq.query.location;
     const radius = appReq.query.radius;
     const keyword = appReq.query.keyword;
+    const photoUrl = appReq.query.photoUrl;
     let endResult = [];
 
     axios.defaults.responseType = "json";
@@ -24,13 +25,13 @@ app.get('/googleplaces', (appReq, appRes) => {
         (callback) => {
             axios
                 .get("https://maps.googleapis.com/maps/api/place/radarsearch/json", {
-                    params: {
-                        key: apiKey,
-                        location,
-                        radius,
-                        keyword
-                    }
-                })
+                params: {
+                    key: apiKey,
+                    location,
+                    radius,
+                    keyword
+                }
+            })
                 .then((res) => {
                     if (res.data.results && res.data.results.length) {
                         return res.data.results;
@@ -50,11 +51,11 @@ app.get('/googleplaces', (appReq, appRes) => {
                 let placeid = result.place_id;
                 axios
                     .get("https://maps.googleapis.com/maps/api/place/details/json", {
-                        params: {
-                            key: apiKey,
-                            placeid
-                        }
-                    })
+                    params: {
+                        key: apiKey,
+                        placeid
+                    }
+                })
                     .then((res) => {
                         return res.data.result;
                     })
@@ -67,9 +68,9 @@ app.get('/googleplaces', (appReq, appRes) => {
                             console.log("This place has email!!! placeid: " + placeid)
                         }
 
-                        let website = result.website ?
-                            result.website :
-                            "";
+                        let website = result.website
+                            ? result.website
+                            : "";
                         let country,
                             city,
                             zipcode;
@@ -92,7 +93,12 @@ app.get('/googleplaces', (appReq, appRes) => {
                             result
                                 .photos
                                 .map(photo => {
-                                    photos.push(photo.photo_reference);
+                                    if (photoUrl == 'true') {
+                                        photos.push(`https://maps.googleapis.com/maps/api/place/photo?key=${apiKey}&photoreference=${photo.photo_reference}&maxheight=800`);
+                                    }else{
+                                        
+                                        photos.push(photo.photo_reference);
+                                    }
                                 });
                         }
 
@@ -102,7 +108,7 @@ app.get('/googleplaces', (appReq, appRes) => {
                         }
 
                         let types = [];
-                        if(result.types && result.types.length) {
+                        if (result.types && result.types.length) {
                             types = result.types;
                         }
 
