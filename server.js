@@ -97,7 +97,7 @@ app.get('/googleplaces', (appReq, appRes) => {
                             result
                                 .photos
                                 .map(photo => {
-                                    if (photoUrl == 'true') {
+                                    if (photoUrl) {
                                         photos.push(`https://maps.googleapis.com/maps/api/place/photo?key=${apiKey}&photoreference=${photo.photo_reference}&maxheight=800`);
                                     }else{
                                         
