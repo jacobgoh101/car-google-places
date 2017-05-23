@@ -167,6 +167,9 @@ app.get('/getImage', (appReq, appRes) => {
     request(photoUrl, {
         encoding: 'binary'
     }, function (error, response, body) {
+        if (!fs.existsSync('./public')) {
+            fs.mkdirSync('./public');
+        }
         fs
             .writeFile('./public/file.png', body, 'binary', function (err) {
                 console.log("writeFile err: " + err);
