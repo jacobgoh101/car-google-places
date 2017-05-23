@@ -168,7 +168,9 @@ app.get('/getImage', (appReq, appRes) => {
         encoding: 'binary'
     }, function (error, response, body) {
         fs
-            .writeFile('./public/file.png', body, 'binary', function (err) {});
+            .writeFile('./public/file.png', body, 'binary', function (err) {
+                console.log("writeFile err: " + err);
+            });
         appRes.json({
             url: "https://" + appReq.headers.host + "/public/file.png"
         });
