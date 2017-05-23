@@ -99,8 +99,8 @@ app.get('/googleplaces', (appReq, appRes) => {
                                 .map(photo => {
                                     if (photoUrl) {
                                         photos.push(`https://maps.googleapis.com/maps/api/place/photo?key=${apiKey}&photoreference=${photo.photo_reference}&maxheight=800`);
-                                    }else{
-                                        
+                                    } else {
+
                                         photos.push(photo.photo_reference);
                                     }
                                 });
@@ -156,6 +156,26 @@ app.get('/googleplaces', (appReq, appRes) => {
         appRes.json(endResult);
     });
 });
+
+app.get('/getImage', (appReq, appRes) => {
+    const request = require('request'),
+        fs = require('fs');
+    appRes.setHeader('Content-Type', 'application/json');
+
+    const photoUrl = appReq.query.photoUrl;
+
+    request(photoUrl, {
+        encoding: 'binary'
+    }, function (error, response, body) {
+        fs
+            .writeFile('./public/file.png', body, 'binary', function (err) {});
+        appRes.json({
+            url: "https://" + appReq.headers.host + "/public/file.png"
+        });
+    });
+});
+
+app.use('/public', express.static('public'));
 
 const port = process.env.PORT || 8080;
 app.listen(port, () => {
